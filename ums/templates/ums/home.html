@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>This is the home page!!!</h1>
+
+    <script>
+        console.log("HERE")
+        // Function to handle OAuth2 callback
+        function handleOAuthCallback() {
+            // Extract parameters from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const state = urlParams.get('state');
+
+            // Retrieve the state from local storage
+            const storedState = localStorage.getItem('oauth_state');
+
+            // State validation
+            // if (!state || state !== storedState) {
+            //     console.error('State validation failed. Possible CSRF attack.');
+            //     // You might want to redirect to an error page or log out the user
+            //     return;
+            // }
+
+            // Clear the state from local storage for next use
+            localStorage.removeItem('oauth_state');
+
+            // If we've got this far, the state is valid
+            if (code) {
+                // Here you would typically send the authorization code to your backend
+                // to exchange for an access token
+                fetch('https://04d2-102-88-83-52.ngrok-free.app/auth/ums/oauth/authenticate/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({code})
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    // Handle the token response from your server
+                    console.log('Token received:', data);
+                    // You might want to set this token in cookies, local storage, or however your app manages sessions
+                    // For example:
+                    // localStorage.setItem('access_token', data.access_token);
+                    // Now, redirect or update UI to indicate logged in state
+                })
+                .catch((error) => {
+                    console.error('Failed to fetch token:', error);
+                });
+            } else {
+                console.error('No authorization code received.');
+            }
+        }
+
+        // Call this function when the page loads
+        window.onload = handleOAuthCallback;
+    </script>
+</body>
+</html>

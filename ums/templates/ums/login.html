@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OAuth Login with Privacy Portal</title>
+    <style>
+      .login-button {
+        background-color: #000;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="pp-login" class="login-button">Login with Privacy Portal</button>
+
+    <script>
+        document
+        .getElementById('pp-login')
+        .addEventListener(
+            'click',
+            function (){
+                // Your Privacy Portal OAuth client ID
+                const clientId = 'a199547e-b4aa-47a9-b804-5b5414bc721b';
+
+                // Redirect URI should match what you set in the OAuth App settings
+                // const redirectUri = 'https://04d2-102-88-83-52.ngrok-free.app/auth/callback';
+                const redirectUri = "{{ redirect_uri }}"
+
+                // Define the permissions you need
+                const scope = 'openid name email';
+
+                // Generate a random state
+                const state = generateRandomState();
+
+                // Store the state in local storage
+                localStorage.setItem('oauth_state', state);
+
+                // Construct the OAuth URL
+                const oauthUrl = new URL('https://app.privacyportal.org/oauth/authorize');
+                oauthUrl.searchParams.append('client_id', clientId);
+                oauthUrl.searchParams.append('redirect_uri', redirectUri);
+                oauthUrl.searchParams.append('scope', scope);
+                oauthUrl.searchParams.append('response_type', 'code');
+                oauthUrl.searchParams.append('state', state);
+
+                // Open the OAuth URL in a new window or tab
+                window.location.href = oauthUrl;
+            }
+        );
+
+        function generateRandomState(length = 16) {
+            // Generate an array of random integers
+            const randomValues = new Uint8Array(length);
+            crypto.getRandomValues(randomValues);
+
+            // Convert the random values to a hexadecimal string
+            return Array.from(randomValues, (byte) => byte.toString(16).padStart(2, '0')).join('');
+        }
+    </script>
+  </body>
+</html>
