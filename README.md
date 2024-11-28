@@ -1,5 +1,5 @@
 # privacy-portal-integration
-SSO Integration with Privacy Portal
+SSO Integration with Privacy Portal Using tutorial on `https://privacyportal.org/blog/sign-in-with-privacy-portal-tutorial`
 
 # Requirements
 - Create a new account on Privacy Portal `https://app.privacyportal.org/`
